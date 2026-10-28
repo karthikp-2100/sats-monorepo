@@ -14,8 +14,8 @@ class ReactionWheel:
 
     `spin_axis_body` is the wheel spin axis in body coordinates.
     `position_body_m` is the mounting location relative to the satellite center of
-    mass. 
-    
+    mass.
+
     Location does NOT matter for this calculation, so can be discarded if desired.
     """
 
@@ -50,7 +50,7 @@ def reaction_wheel_force_moment(
 ) -> ForceMoment:
     """Return the wheel moment on the satellite in body coordinates.
 
-    Here the convention is the satellite inertia J includes the wheel. 
+    Here the convention is the satellite inertia J includes the wheel.
 
     From Markley, Euler's equation for this form of J is given by:
     tau = J w_dot + w x (J + H_w) + H_w_dot
@@ -74,9 +74,7 @@ def reaction_wheel_force_moment(
         wheel.spin_inertia_kgm2 * wheel_speed_rad_per_s * wheel.spin_axis_body
     )
     wheel_momentum_dot_body_nm = (
-        wheel.spin_inertia_kgm2
-        * wheel_acceleration_rad_per_s2
-        * wheel.spin_axis_body
+        wheel.spin_inertia_kgm2 * wheel_acceleration_rad_per_s2 * wheel.spin_axis_body
     )
     return ForceMoment(
         force_eci_n=np.zeros(3),
@@ -88,6 +86,7 @@ def reaction_wheel_force_moment(
 
 
 # testing
+
 
 def _state(
     quat_eci_to_body: Quaternion, angular_velocity_eci_rad_per_s: FloatArray
@@ -106,7 +105,9 @@ def test_wheel_angular_acceleration_is_first_order_lag() -> None:
 
 
 def test_wheel_spin_up_reacts_on_body() -> None:
-    wheel = ReactionWheel(np.array([0.0, 0.0, 2.0]), np.array([0.1, 0.0, 0.0]), 1e-3, 0.5)
+    wheel = ReactionWheel(
+        np.array([0.0, 0.0, 2.0]), np.array([0.1, 0.0, 0.0]), 1e-3, 0.5
+    )
     state = _state(Quaternion.identity(), np.zeros(3))
 
     moment_body_nm = reaction_wheel_force_moment(
