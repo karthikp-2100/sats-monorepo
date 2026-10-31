@@ -14,11 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Pinned: clang-format's output drifts between major versions, so an
-      # unpinned one would fail on code that is correctly formatted locally.
-      - name: Install clang-format
-        run: sudo apt-get update && sudo apt-get install -y clang-format-18
-
+      # clang-format and ruff are both pinned in uv.lock, so CI runs the
+      # exact versions a local `uv sync` installs.
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
 

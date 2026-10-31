@@ -56,11 +56,11 @@ After installing Homebrew, close and re-open your terminal.
 Windows is not very fun. Because it is built completely seperately from MacOS (which is Unix) and Linux distributions, it doesn't work properly with compiling low-level code, which is mostly tested and run on Linux.
 
 Here are the options for running stuff on Windows:
-1. `WSL2` - **Recommended**. This allows you to create a very efficient virtual machine for Linux on your Windows computer, owned by Microsoft itself. Then, you can properly do everything. 
+1. `WSL2` - **Recommended**. This allows you to create a very efficient virtual machine for Linux on your Windows computer, owned by Microsoft itself. Then, you can properly do everything.
 
    This does take a non-insignificant amount of disk space, but it is not that bad; and you most likely will have to set this up in the future anyway for things like low level systems, Docker, etc. if you stick to Windows. We will explain how to do this!
-2. `Dual Boot Linux`! This is a very hard option, but it's a good idea if you've been interested in trying out  Linux anyway for whatever reason. 
-   
+2. `Dual Boot Linux`! This is a very hard option, but it's a good idea if you've been interested in trying out  Linux anyway for whatever reason.
+
    We've had very good experiences with Linux distributions in the past, as they have become way faster, more battery efficient, and just nicer to use than Microslop's Windows. Feel free to ask for help on this step, we won't document it here, but you do need a large amount of empty disk space. We can give you advice on distros, etc.
 3. `Wait for Linux Boxes`. We are planning to buy Linux Boxes so that you can compile, test, and run code through actual hardware. This has not been setup yet, so we recommend trying `WSL2` first.
 
@@ -91,7 +91,7 @@ sudo apt install git
 ```
 
 ## Bazelisk
-First, we need to install Bazelisk, our build system manager. 
+First, we need to install Bazelisk, our build system manager.
 
 ### MacOS
 You can install it on MacOS with Homebrew:
@@ -107,7 +107,7 @@ If not on MacOS, find your binary on the [Github Releases Page](https://github.c
 
 > Tip: You can copy the link of the release you want and type `wget [your-link-here]`, for example `wget https://github.com/bazelbuild/bazelisk/releases/download/v1.29.0/bazelisk-linux-amd64`. This will automatically download the file in your current directory!
 
-You can then rename this binary to `bazelisk` and move it somewhere where apps are stored. 
+You can then rename this binary to `bazelisk` and move it somewhere where apps are stored.
 * On Linux, we recommend `/usr/local/bin/bazelisk`. You can do this with `sudo mv [source] [destination]` (`sudo` is required for `/usr/local/bin`).
 
 ### Verification
@@ -184,6 +184,31 @@ On Ubuntu:
 ```bash
 sudo apt install build-essential
 ```
+
+## UV
+Our ground tooling (scripts like `satui.py`, the simulator, tests, and pre-commit hooks) is written in Python. We use `uv` to manage Python and all of its packages, so you don't need to install Python yourself - `uv` will automatically download the right version (3.13) the first time you run something!
+
+### MacOS
+```bash
+brew install uv
+```
+
+### Linux & WSL2
+Use the official install script:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+After installing, close and re-open your terminal so `uv` is on your path.
+
+### Verification
+Type in `uv --version`, and it should print something like `uv 0.x.y`.
+
+Then, from inside the `sats-monorepo` folder, run:
+```bash
+uv sync
+```
+This will download Python and install all of the packages the repository needs. After that, you can run any of our scripts with `uv run`, for example `uv run pytest`.
 
 ## Moving on
 

@@ -21,18 +21,10 @@ elif [[ -n ${1:-} ]]; then
     exit 2
 fi
 
-clang_format=$(command -v clang-format-18 || command -v clang-format || true)
-if [[ -z $clang_format ]]; then
-    echo "error: clang-format not found (apt install clang-format-18)" >&2
-    exit 1
-fi
-
-# clang-format's output drifts between major versions, so a mismatch here
-# means formatting that passes locally and fails in CI.
-version=$("$clang_format" --version | grep -oE '[0-9]+' | head -1)
-if [[ $version != 18 ]]; then
-    echo "warning: clang-format $version, CI pins 18; output may differ" >&2
-fi
+# clang-format comes from the uv dev group, pinned to an exact release:
+# even patch releases within 18.x format some code differently, so a
+# system install would pass locally and fail in CI (or the reverse).
+clang_format=(uv run clang-format)
 
 # Only tracked files: a brand new file has to be git added before it is
 # formatted, which is also what keeps this in step with the CI check.
@@ -52,12 +44,12 @@ done < <(git ls-files '*.py')
 
 if $check; then
     echo "checking ${#cpp_sources[@]} c++ files"
-    "$clang_format" --style=file --dry-run --Werror "${cpp_sources[@]}"
+    "${clang_format[@]}" --style=file --dry-run --Werror "${cpp_sources[@]}"
     uv run ruff check "${python_sources[@]}"
     uv run ruff format --check "${python_sources[@]}"
 else
     echo "formatting ${#cpp_sources[@]} c++ files"
-    "$clang_format" -i --style=file "${cpp_sources[@]}"
+    "${clang_format[@]}" -i --style=file "${cpp_sources[@]}"
     uv run ruff check --fix "${python_sources[@]}"
     uv run ruff format "${python_sources[@]}"
 fi

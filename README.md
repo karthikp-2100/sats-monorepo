@@ -122,8 +122,8 @@ uv run pre-commit install      # install the repository's git commit hooks
 ```
 
 Only tracked files are formatted, so `git add` a new file before expecting
-it to be touched. C++ needs clang-format 18 on the path; its output drifts
-between major versions and CI pins that one.
+it to be touched. clang-format is pinned to an exact release in the uv dev
+group (even 18.x patch releases disagree), so no system install is needed.
 
 The commit hook formats the staged snapshot. If it changes anything, the
 commit stops so you can review and stage the fixes before committing again.
